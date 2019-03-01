@@ -1,10 +1,10 @@
 import sys
 import random
 from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
-                               QVBoxLayout, QWidget)
+                               QVBoxLayout, QHBoxLayout, QWidget, QPlainTextEdit)
 from PySide2.QtCore import Slot, Qt
 
-class MyWidget(QWidget):
+class MyColumn(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
@@ -26,6 +26,18 @@ class MyWidget(QWidget):
     @Slot()
     def magic(self):
         self.text.setText(random.choice(self.hello))
+
+class MyWidget(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+
+        self.hello = MyColumn()
+        self.plainText = QPlainTextEdit()
+
+        self.layout = QHBoxLayout()
+        self.layout.addWidget(self.hello)
+        self.layout.addWidget(self.plainText)
+        self.setLayout(self.layout)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
