@@ -3,6 +3,13 @@ import random
 from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
                                QVBoxLayout, QHBoxLayout, QWidget, QPlainTextEdit)
 from PySide2.QtCore import Slot, Qt
+import blame_file
+
+"""
+User stories
+------------
+(/) As Bob I want git-blame to be printed to the MyColumn widget.
+"""
 
 class MyColumn(QWidget):
     def __init__(self):
@@ -33,6 +40,11 @@ class MyWidget(QWidget):
 
         self.hello = MyColumn()
         self.plainText = QPlainTextEdit()
+
+        # run the blame command and capture the output
+        blame = blame_file.Blame()
+        output = blame.run()
+        self.plainText.appendPlainText(output)
 
         self.layout = QHBoxLayout()
         self.layout.addWidget(self.hello)
