@@ -4,7 +4,7 @@ I try to write this module's/application's documentation in user stories. This
 way the list of requirements is transparent and can evolve during development.
 
 (/) As Bob I want git-blame to be printed to the MyColumn widget.
-() As Bob I want the file to be blamed specified as a command line argument.
+(/) As Bob I want the file to be blamed specified as a command line argument.
 () As Bob I want the MyColumn widget splitted in order to have the blame info
 separated from the content.
 () As Bob I want the content to be syntactically highlighted.
@@ -44,14 +44,14 @@ class MyColumn(QWidget):
         self.text.setText(random.choice(self.hello))
 
 class MyWidget(QWidget):
-    def __init__(self):
+    def __init__(self, toBlame):
         QWidget.__init__(self)
 
         self.hello = MyColumn()
         self.plainText = QPlainTextEdit()
 
         # run the blame command and capture the output
-        blame = blame_file.Blame()
+        blame = blame_file.Blame(toBlame)
         output = blame.run()
         self.plainText.appendPlainText(output)
 
@@ -60,11 +60,24 @@ class MyWidget(QWidget):
         self.layout.addWidget(self.plainText)
         self.setLayout(self.layout)
 
+
+class ArgumentWarning(SyntaxWarning):
+    pass
+
+
+def main(argv):
+    app = QApplication(argv)
+    #print(app.arguments())
+
+    if 1 < len(app.arguments()):
+        widget = MyWidget(app.arguments()[1])
+        widget.resize(800, 600)
+        widget.show()
+
+        sys.exit(app.exec_())
+    else:
+        sys.exit("No file to be blamed given.")
+
+
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    widget = MyWidget()
-    widget.resize(800, 600)
-    widget.show()
-
-    sys.exit(app.exec_())
+    main(sys.argv)
