@@ -1,22 +1,31 @@
+""" User stories
+
+I try to write this module's/application's documentation in user stories. This
+way the list of requirements is transparent and can evolve during development.
+
+(/) As Bob I want git-blame to be printed to the MyColumn widget.
+() As Bob I want the file to be blamed specified as a command line argument.
+() As Bob I want the MyColumn widget splitted in order to have the blame info
+separated from the content.
+() As Bob I want the content to be syntactically highlighted.
+() As Werner I want to get and process the blame info in its porcelain format
+in order to get the full information about the commit.
+"""
+
 import sys
 import random
+
 from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
                                QVBoxLayout, QHBoxLayout, QWidget, QPlainTextEdit)
 from PySide2.QtCore import Slot, Qt
-import blame_file
 
-"""
-User stories
-------------
-(/) As Bob I want git-blame to be printed to the MyColumn widget.
-"""
+import blame_file
 
 class MyColumn(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        self.hello = ["Hallo Welt", "你好，世界", "Hei maailma",
-            "Hola Mundo"]
+        self.hello = ["Hallo Welt", "你好，世界", "Hei maailma", "Hola Mundo"]
 
         self.button = QPushButton("Click me!")
         self.text = QLabel("Hello World")

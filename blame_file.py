@@ -3,7 +3,7 @@ import shlex
 
 class Blame:
     def __init__(self):
-        self.gitArgs = "git blame -- {}"
+        self.gitArgs = "git annotate --porcelain -- {}"
 
     def run(self):
         try:
