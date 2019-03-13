@@ -1,3 +1,5 @@
+#!python
+
 """ User stories
 
 I try to write this module's/application's documentation in user stories. This
@@ -5,11 +7,11 @@ way the list of requirements is transparent and can evolve during development.
 
 (/) As Bob I want git-blame to be printed to the BlameDocument widget.
 (/) As Bob I want the file to be blamed specified as a command line argument.
-(/) As Bob I want the BlameDocument widget splitted in order to have the blame info
+(/) As Bob I want the BlameDocument widget splitted in order to have the commit info
 separated from the content.
-() As Bob I want the blame info and the content scroll simultaneously.
+() As Bob I want the commit info and the content scroll simultaneously.
 () As Bob I want the content to be syntactically highlighted.
-() As Werner I want to get and process the blame info in its porcelain format
+() As Werner I want to get and process the commit info in its porcelain format
 in order to get the full information about the commit.
 """
 
@@ -20,7 +22,7 @@ from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
                                QVBoxLayout, QHBoxLayout, QWidget, QPlainTextEdit)
 from PySide2.QtCore import Slot, Qt
 
-from blameDocument import BlameDocument
+from blameViewer import BlameViewer
 
 
         # self.hello = ["Hallo Welt", "你好，世界", "Hei maailma", "Hola Mundo"]
@@ -47,10 +49,10 @@ class MyWidget(QWidget):
         QWidget.__init__(self)
 
         # For now there is only this one document
-        self.blameDoc = BlameDocument(toBlame)
+        self.blameView = BlameViewer(toBlame)
 
         self.layout = QHBoxLayout()
-        self.layout.addWidget(self.blameDoc)
+        self.layout.addWidget(self.blameView)
         self.setLayout(self.layout)
 
 
