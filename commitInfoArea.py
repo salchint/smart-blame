@@ -12,5 +12,7 @@ class CommitInfoArea(QWidget):
     def sizeHint(self):
         return QSize(self._viewer.commitInfoAreaWidth(), 0)
 
-    def paintEvent(self, event):
-        self._viewer.commitInfoAreaPaintEvent(event)
+    def paintEvent(self, e):
+        print ('Paint the commit info area')
+        # QWidget.paintEvent(self, e)
+        self._viewer.commitInfoAreaPaintEvent(e)

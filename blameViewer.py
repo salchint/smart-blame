@@ -1,6 +1,7 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
         QPlainTextEdit)
-from PySide2.QtCore import Slot, Qt, QRect
+from PySide2.QtCore import (Slot, Qt, QRect)
+from PySide2.QtGui import (QPainter, QTextBlock)
 
 from commitInfoArea import CommitInfoArea
 from blame_file import Blame
@@ -42,8 +43,31 @@ class BlameViewer(QPlainTextEdit):
             self.commitInfoAreaWidth()
 
     def resizeEvent(self, e):
+        # print('Resize the blame viewer')
         QPlainTextEdit.resizeEvent(self, e)
 
         cr = self.contentsRect()
         self.commitInfoArea.setGeometry(QRect(cr.left(), cr.top(),
             self.commitInfoAreaWidth(), cr.height()))
+
+    def commitInfoAreaPaintEvent(self, e):
+        painter = QPainter(self.commitInfoArea)
+        painter.fillRect(e.rect(), Qt.darkCyan)
+
+        block = self.firstVisibleBlock()
+        blocknumber = block.blockNumber()
+        top = (int)(self.blockBoundingGeometry(block).translated(
+                self.contentOffset()).top())
+        bottom = top + (int)(self.blockBoundingRect(block).height())
+
+        while block.isValid()  and  top <= e.rect().bottom:
+            if block.isVisible()  and  bottom >= e.rect().top:
+                number = str(blocknumber + 1)
+                painter.setPen(Qt.black)
+                painter.drawText(0, top, commitInfoArea.width(),
+                        self.fontMetrics.height(), Qt.AlignRight, number)
+
+            block = block.next()
+            top = bottom
+            bottom = top + (int)(blockBoundingRect(block).height())
+            blocknumber = blocknumber + 1
