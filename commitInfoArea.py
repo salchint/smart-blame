@@ -6,6 +6,7 @@ class CommitInfoArea(QWidget):
     the blamed file.
     """
     def __init__(self, viewer):
+        QWidget.__init__(self)
         self._viewer = viewer
 
     def sizeHint(self):
