@@ -1,3 +1,6 @@
+#!python
+# -*- coding: utf-8 -*-
+
 import subprocess
 import shlex
 
@@ -11,8 +14,8 @@ class Blame:
                 shlex.split(self.gitArgs),
                 stderr=subprocess.STDOUT,
                 shell=False
-            ).decode()
-            # print(output)
+            )
+            print(output)
             return output
         except subprocess.CalledProcessError as e:
             #print("Failed to run '{0}'".format(self.gitArgs))
