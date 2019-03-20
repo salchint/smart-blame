@@ -8,9 +8,9 @@ way the list of requirements is transparent and can evolve during development.
 
 (/) As Bob I want git-blame to be printed to the BlameDocument widget.
 (/) As Bob I want the file to be blamed specified as a command line argument.
-(/) As Bob I want the BlameDocument widget splitted in order to have the commit info
+(/) As Bob I want the BlameDocument widget split in order to have the commit info
 separated from the content.
-() As Bob I want the commit info and the content scroll simultaneously.
+(/) As Bob I want the commit info and the content scroll simultaneously.
 () As Bob I want the content to be syntactically highlighted.
 () As Werner I want to get and process the commit info in its porcelain format
 in order to get the full information about the commit.

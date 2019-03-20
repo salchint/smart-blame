@@ -1,12 +1,15 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
-        QPlainTextEdit)
+                               QPlainTextEdit)
 from PySide2.QtCore import (Slot, Qt, QRect)
 from PySide2.QtGui import (QPainter, QTextBlock)
 
 from commitInfoArea import CommitInfoArea
 from blame_file import Blame
 
+
 class BlameViewer(QPlainTextEdit):
+    """The text widget that prints the file content and the annotation info."""
+
     def __init__(self, toBlame):
         QPlainTextEdit.__init__(self)
 
@@ -23,7 +26,6 @@ class BlameViewer(QPlainTextEdit):
 
     def commitInfoAreaWidth(self):
         digits = 7
-
         space = 3 + self.fontMetrics().width('9') * digits
         return space
 
@@ -37,10 +39,10 @@ class BlameViewer(QPlainTextEdit):
             self.commitInfoArea.scroll(0, dy)
         else:
             self.commitInfoArea.update(0, rect.y(),
-                    self.commitInfoArea.width(), rect.height())
+                self.commitInfoArea.width(), rect.height())
 
         if rect.contains(self.viewport().rect()):
-            self.commitInfoAreaWidth()
+            self.updateCommitInfoAreaWidth(0)
 
     def resizeEvent(self, e):
         # print('Resize the blame viewer')
