@@ -6,8 +6,26 @@ import shlex
 
 
 class BlameBlock:
-    def __init__(self, block):
-        _block = block
+    def __init__(self, block, lineCnt=0):
+        self._blockIt = block
+        self._lineCount = lineCnt
+
+        # Decode the first line
+        line = self._blockIt.__next__()
+        fields = line.split()
+        if 4 == len(fields):
+            self._commitId, self._lineNoOrig, self._lineNoFinal, self._lineCount = fields
+        else:
+            self._commitId, self._lineNoOrig, self._lineNoFinal = fields
+
+        # print ("Commit: {}".format(self._commitId))
+        # print ("Line  : {}".format(self._lineNoOrig))
+        # print ("Line  : {}".format(self._lineNoFinal))
+        # print ("Lines : {}".format(self._lineCount))
+
+    def __repr__(self):
+        s = "\n".join(self._blockIt)
+        return s
 
 
 class Blame:
@@ -46,38 +64,8 @@ class Blame:
                 return
 
     def getBlock(self):
-        pass
+        block = BlameBlock(self.iterPorcelain())
+        # print (block)
+        return block
 
 
-    # def getAnnotation(self):
-        # return self.run().decode()
-
-    # def getAnnotationBlock(self, beginning):
-        # readChars = 0
-        # annotation = self.getAnnotation()
-
-        # # Annotation starts with a header of one or 12 lines
-        # for line in annotation[beginning:].split('\n'):
-            # readChars += len(line)
-            # line = line.rstrip()
-
-            # # Once we received the complete header, get the file content, which
-            # # always starts with a TAB.
-            # if line.startswith("\t"):
-                # for contentLine in annotation[beginning+readChars:].split('\n'):
-                    # readChars += len(contentLine)
-                    # contentLine = contentLine.rstrip()
-                    # if contentLine.startswith("\t"):
-                        # yield contentLine
-
-                # # The block is read
-                # break
-            # yield line
-
-    # def getAnnotationBlocks(self):
-        # beginning = 0
-        # print("-" * 80)
-        # for line in self.getAnnotationBlock(beginning):
-            # print (line)
-
-        # print("-" * 80)
