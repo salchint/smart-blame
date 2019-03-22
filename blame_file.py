@@ -6,14 +6,16 @@ import shlex
 
 
 class BlameBlock:
-    def __init__(self, block, lineCnt=0):
-        self._blockIt = block
+    def __init__(self, blockIt, lineCnt=0):
+        self._lines = '\n'.join(blockIt)
         self._lineCount = lineCnt
 
         # Decode the first line
-        line = self._blockIt.__next__()
+        line = self._lines[1:1]
         fields = line.split()
-        if 4 == len(fields):
+        if 0 == len(fields):
+            return
+        elif 4 == len(fields):
             self._commitId, self._lineNoOrig, self._lineNoFinal, self._lineCount = fields
         else:
             self._commitId, self._lineNoOrig, self._lineNoFinal = fields
@@ -24,8 +26,7 @@ class BlameBlock:
         # print ("Lines : {}".format(self._lineCount))
 
     def __repr__(self):
-        s = "\n".join(self._blockIt)
-        return s
+        return self._lines
 
 
 class Blame:
@@ -55,6 +56,10 @@ class Blame:
 
     def iterPorcelain(self):
         for line in self.iterLine(self._readOffset):
+            if 0 == len(line):
+                # Process a literally empty line
+                yield line
+                return
             if not line.startswith('\t'):
                 # Process the header lines
                 yield line
@@ -65,7 +70,16 @@ class Blame:
 
     def getBlock(self):
         block = BlameBlock(self.iterPorcelain())
-        # print (block)
         return block
 
+    def iterBlocks(self):
+        while True:
+            try:
+                blockIt = self.iterPorcelain()
+                block = BlameBlock(blockIt)
+                if 0 == len(str(block)):
+                    return
+                yield block
+            except:
+                return
 
