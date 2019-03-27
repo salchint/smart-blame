@@ -6,27 +6,37 @@ import shlex
 
 
 class BlameBlock:
-    def __init__(self, blockIt, lineCnt=0):
-        self._lines = '\n'.join(blockIt)
-        self._lineCount = lineCnt
+    def __init__(self, blockIt):
+        self._lines = [x for x in blockIt]
+        self._lineCount = 0
+        self._commitId = 0
+        # print("Lines: ")
+        # print(self._lines)
 
         # Decode the first line
-        line = self._lines[1:1]
+        line = self._lines[0]
         fields = line.split()
         if 0 == len(fields):
+            # print("No data in blame block")
             return
         elif 4 == len(fields):
             self._commitId, self._lineNoOrig, self._lineNoFinal, self._lineCount = fields
         else:
             self._commitId, self._lineNoOrig, self._lineNoFinal = fields
 
-        # print ("Commit: {}".format(self._commitId))
-        # print ("Line  : {}".format(self._lineNoOrig))
-        # print ("Line  : {}".format(self._lineNoFinal))
-        # print ("Lines : {}".format(self._lineCount))
-
     def __repr__(self):
-        return self._lines
+        return '\n'.join(self._lines)
+
+
+    def commitId(self):
+        return self._commitId
+
+    def lineCount(self):
+        return self._lineCount
+
+    def sourceLine(self):
+        # Take the last line and strip the leading tab
+        return self._lines[-1][1:]
 
 
 class Blame:
