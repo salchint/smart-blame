@@ -21,11 +21,13 @@ class BlameViewer(QPlainTextEdit):
 
         # Run the blame command and capture the output
         blamer = Blame(toBlame)
-        output = blamer.run()
-        self.setPlainText(output.decode())
+        #output = blamer.run()
+        #self.setPlainText(output.decode())
+        self._commitLines = [(b.sourceLine(), b.commitId()) for b in blamer.iterBlocks()]
+        self.setPlainText('\n'.join((l[0] for l in self._commitLines)))
 
     def commitInfoAreaWidth(self):
-        digits = 7
+        digits = 44
         space = 3 + self.fontMetrics().width('9') * digits
         return space
 
@@ -64,7 +66,8 @@ class BlameViewer(QPlainTextEdit):
 
         while block.isValid()  and  top <= e.rect().bottom():
             if block.isVisible()  and  bottom >= e.rect().top():
-                number = str(blocknumber + 1)
+                commitId = self._commitLines[blocknumber][1]
+                number = commitId + " " + str(blocknumber + 1)
                 painter.setPen(Qt.black)
                 painter.drawText(0, top, self.commitInfoArea.width(),
                         self.fontMetrics().height(), Qt.AlignRight, number)
