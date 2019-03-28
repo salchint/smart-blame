@@ -38,6 +38,9 @@ class BlameBlock:
         # Take the last line and strip the leading tab
         return self._lines[-1][1:]
 
+    def lineNumber(self):
+        return self._lineNoFinal
+
 
 class Blame:
     def __init__(self, toBlame):
