@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
-                               QPlainTextEdit)
+                               QPlainTextEdit, QPushButton)
 from PySide2.QtCore import (Slot, Qt, QRect)
 from PySide2.QtGui import (QPainter, QTextBlock)
 
@@ -63,18 +63,28 @@ class BlameViewer(QPlainTextEdit):
         top = (int)(self.blockBoundingGeometry(block).translated(
                 self.contentOffset()).top())
         bottom = top + (int)(self.blockBoundingRect(block).height())
+        
+        self._infoLayout = QVBoxLayout()
 
         while block.isValid()  and  top <= e.rect().bottom():
             if block.isVisible()  and  bottom >= e.rect().top():
                 commitId = self._commitLines[blocknumber][1]
                 lineNumber = self._commitLines[blocknumber][2]
-                #number = commitId + " " + str(blocknumber + 1)
                 number = commitId + " " + lineNumber
-                painter.setPen(Qt.black)
-                painter.drawText(0, top, self.commitInfoArea.width(),
-                        self.fontMetrics().height(), Qt.AlignRight, number)
+                # painter.setPen(Qt.black)
+                # painter.drawText(0, top, self.commitInfoArea.width(),
+                #         self.fontMetrics().height(), Qt.AlignRight, number)
+                button = QPushButton(number)
+                self._infoLayout.addWidget(button, stretch=1, alignment=Qt.AlignRight)
+                button.clicked.connect(self.reblameSelected)
 
             block = block.next()
             top = bottom
             bottom = top + (int)(self.blockBoundingRect(block).height())
             blocknumber = blocknumber + 1
+
+        self.commitInfoArea.setLayout(self._infoLayout)
+
+    @Slot()
+    def reblameSelected(self):
+        pass
