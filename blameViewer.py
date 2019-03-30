@@ -17,6 +17,7 @@ class BlameViewer(QPlainTextEdit):
         self.commitInfoArea = CommitInfoArea(self)
         self.blockCountChanged.connect(self.updateCommitInfoAreaWidth)
         self.updateRequest.connect(self.updateCommitInfoArea)
+        self.commitInfoArea.clicked.connect(self.reblameAtCommit)
         self.updateCommitInfoAreaWidth(0)
 
         # Run the blame command and capture the output
@@ -64,27 +65,38 @@ class BlameViewer(QPlainTextEdit):
                 self.contentOffset()).top())
         bottom = top + (int)(self.blockBoundingRect(block).height())
         
-        self._infoLayout = QVBoxLayout()
-
         while block.isValid()  and  top <= e.rect().bottom():
             if block.isVisible()  and  bottom >= e.rect().top():
                 commitId = self._commitLines[blocknumber][1]
                 lineNumber = self._commitLines[blocknumber][2]
                 number = commitId + " " + lineNumber
-                # painter.setPen(Qt.black)
-                # painter.drawText(0, top, self.commitInfoArea.width(),
-                #         self.fontMetrics().height(), Qt.AlignRight, number)
-                button = QPushButton(number)
-                self._infoLayout.addWidget(button, stretch=1, alignment=Qt.AlignRight)
-                button.clicked.connect(self.reblameSelected)
+                painter.setPen(Qt.black)
+                painter.drawText(0, top, self.commitInfoArea.width(),
+                        self.fontMetrics().height(), Qt.AlignRight, number)
 
             block = block.next()
             top = bottom
             bottom = top + (int)(self.blockBoundingRect(block).height())
             blocknumber = blocknumber + 1
 
-        self.commitInfoArea.setLayout(self._infoLayout)
 
     @Slot()
-    def reblameSelected(self):
-        pass
+    def reblameAtCommit(self, y):
+        #print("Clicked at {}".format(y))
+
+        block = self.firstVisibleBlock()
+        blocknumber = block.blockNumber()
+        top = (int)(self.blockBoundingGeometry(block).translated(
+                self.contentOffset()).top())
+        bottom = top + (int)(self.blockBoundingRect(block).height())
+
+        commitId = 0
+        while block.isValid()  and  top <= y:
+            commitId = self._commitLines[blocknumber][1]
+
+            block = block.next()
+            top = bottom
+            bottom = top + (int)(self.blockBoundingRect(block).height())
+            blocknumber = blocknumber + 1
+
+        print ("Clicked on {}".format(commitId))
