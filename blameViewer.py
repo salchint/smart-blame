@@ -1,6 +1,6 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
                                QPlainTextEdit)
-from PySide2.QtCore import (Slot, Qt, QRect)
+from PySide2.QtCore import (Signal, Slot, Qt, QRect)
 from PySide2.QtGui import (QPainter, QTextBlock)
 
 from commitInfoArea import CommitInfoArea
@@ -10,7 +10,10 @@ from blame_file import Blame
 class BlameViewer(QPlainTextEdit):
     """The text widget that prints the file content and the annotation info."""
 
-    def __init__(self, toBlame):
+    # Signal the commitId to be reblamed
+    commitIdClicked = Signal(int)
+
+    def __init__(self, toBlame, commit=0):
         QPlainTextEdit.__init__(self)
 
         # The UI part
@@ -21,9 +24,9 @@ class BlameViewer(QPlainTextEdit):
         self.updateCommitInfoAreaWidth(0)
 
         self.toBlame = toBlame
-        self.printSelf(toBlame)
+        self.printSelf(toBlame, commit)
 
-    def printSelf(self, toBlame, commit=""):
+    def printSelf(self, toBlame, commit=0):
         print("Blaming {} at commit {}....".format(toBlame, commit))
         # Run the blame command and capture the output
         blamer = Blame(toBlame, commit=commit)
@@ -107,4 +110,5 @@ class BlameViewer(QPlainTextEdit):
             blocknumber = blocknumber + 1
 
         # print ("Clicked on {}".format(commitId))
-        self.printSelf(self.toBlame, commitId)
+        # self.printSelf(self.toBlame, commitId)
+        self.commitIdClicked.emit(commitId)

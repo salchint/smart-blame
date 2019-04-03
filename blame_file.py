@@ -54,8 +54,8 @@ class Blame:
     output. So the alternative is to iterate through the porcelain 'blocks'
     """
 
-    def __init__(self, toBlame, commit=""):
-        if 0 < len(commit):
+    def __init__(self, toBlame, commit=0):
+        if 0 < commit:
             self.gitArgs = "git blame --porcelain {} -- {}".format(commit, toBlame)
         else:
             self.gitArgs = "git blame --porcelain -- {}".format(toBlame)

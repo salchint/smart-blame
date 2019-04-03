@@ -52,15 +52,41 @@ from blameViewer import BlameViewer
 
 
 class MyWidget(QWidget):
+    """This is my main widget.
+
+    The main widget represents the container for the one or more blameViewer
+    widgets, each displaying one version of the given file.
+    """
+
     def __init__(self, toBlame):
         QWidget.__init__(self)
 
-        # For now there is only this one document
-        self.blameView = BlameViewer(toBlame)
+        self.viewers = []
+
+        # Add the initial viewer, displaying working copy version of the given
+        # file.
+        blameView = BlameViewer(toBlame)
+        self.addViewer(blameView)
+
+    @Slot()
+    def reblameCommit(self, commitId):
+        print("  Reblame at {}".format(commitId))
+        blameView = BlameViewer(self.viewers[0].toBlame, commitId)
+        self.addViewer(blameView)
+
+    def addViewer(self, viewer):
+        # New viewers are displayed left to the current ones
+        self.viewers.insert(0, viewer)
 
         self.layout = QHBoxLayout()
-        self.layout.addWidget(self.blameView)
+
+        for v in self.viewers:
+            self.layout.addWidget(v)
+
         self.setLayout(self.layout)
+
+        # Make the viewer sensitive to reblaming events
+        viewer.commitIdClicked.connect(self.reblameCommit)
 
 
 class ArgumentWarning(SyntaxWarning):
@@ -78,7 +104,7 @@ def main(argv):
 
         sys.exit(app.exec_())
     else:
-        sys.exit("No file to be blamed given.")
+        sys.exit("No file to be blamed specified.")
 
 
 if __name__ == "__main__":
