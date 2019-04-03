@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
-                               QPlainTextEdit, QPushButton)
+                               QPlainTextEdit)
 from PySide2.QtCore import (Slot, Qt, QRect)
 from PySide2.QtGui import (QPainter, QTextBlock)
 
@@ -20,11 +20,18 @@ class BlameViewer(QPlainTextEdit):
         self.commitInfoArea.clicked.connect(self.reblameAtCommit)
         self.updateCommitInfoAreaWidth(0)
 
+        self.toBlame = toBlame
+        self.printSelf(toBlame)
+
+    def printSelf(self, toBlame, commit=""):
+        print("Blaming {} at commit {}....".format(toBlame, commit))
         # Run the blame command and capture the output
-        blamer = Blame(toBlame)
+        blamer = Blame(toBlame, commit=commit)
         #output = blamer.run()
         #self.setPlainText(output.decode())
         self._commitLines = [(b.sourceLine(), b.commitId(), b.lineNumber()) for b in blamer.iterBlocks()]
+        print("Collected {} lines at commit {}".format(len(self._commitLines),
+               commit))
         self.setPlainText('\n'.join((l[0] for l in self._commitLines)))
 
     def commitInfoAreaWidth(self):
@@ -64,7 +71,7 @@ class BlameViewer(QPlainTextEdit):
         top = (int)(self.blockBoundingGeometry(block).translated(
                 self.contentOffset()).top())
         bottom = top + (int)(self.blockBoundingRect(block).height())
-        
+
         while block.isValid()  and  top <= e.rect().bottom():
             if block.isVisible()  and  bottom >= e.rect().top():
                 commitId = self._commitLines[blocknumber][1]
@@ -99,4 +106,5 @@ class BlameViewer(QPlainTextEdit):
             bottom = top + (int)(self.blockBoundingRect(block).height())
             blocknumber = blocknumber + 1
 
-        print ("Clicked on {}".format(commitId))
+        # print ("Clicked on {}".format(commitId))
+        self.printSelf(self.toBlame, commitId)

@@ -5,7 +5,10 @@ import subprocess
 import shlex
 
 
-class BlameBlock:
+class PorcelainBlock:
+    """A PorcelainBlock encapsulates the deserialized fields of a block of
+    annotation information attached to a line of code."""
+
     def __init__(self, blockIt):
         self._lines = [x for x in blockIt]
         self._lineCount = 0
@@ -43,8 +46,19 @@ class BlameBlock:
 
 
 class Blame:
-    def __init__(self, toBlame):
-        self.gitArgs = "git blame --porcelain -- {}".format(toBlame)
+    """This class issues the blame command and collects the result textual
+    result.
+
+    It can be used to iterate through git's output line by line. But it
+    includes some logic on its own to interpret the git-blame's porcelain
+    output. So the alternative is to iterate through the porcelain 'blocks'
+    """
+
+    def __init__(self, toBlame, commit=""):
+        if 0 < len(commit):
+            self.gitArgs = "git blame --porcelain {} -- {}".format(commit, toBlame)
+        else:
+            self.gitArgs = "git blame --porcelain -- {}".format(toBlame)
         self._readOffset = 0
 
     def run(self):
@@ -82,14 +96,14 @@ class Blame:
                 return
 
     def getBlock(self):
-        block = BlameBlock(self.iterPorcelain())
+        block = PorcelainBlock(self.iterPorcelain())
         return block
 
     def iterBlocks(self):
         while True:
             try:
                 blockIt = self.iterPorcelain()
-                block = BlameBlock(blockIt)
+                block = PorcelainBlock(blockIt)
                 if 0 == len(str(block)):
                     return
                 yield block

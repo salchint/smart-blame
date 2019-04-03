@@ -9,22 +9,21 @@ way the list of requirements is transparent and can evolve during development.
 (/) As Bob I want git-blame to be printed to the BlameDocument widget.
 (/) As Bob I want the file to be blamed specified as a command line argument.
 (/) As Bob I want the BlameDocument widget split in order to have the commit info
-separated from the content.
+    separated from the content.
 (/) As Bob I want the commit info and the content scroll simultaneously.
 () As Bob I want the content to be syntactically highlighted.
 (/) As Werner I want to get and process the commit info in its porcelain format
     in order to get the full information about the commit.
-() As Bob I want the commitId to be clickable.
-() As Bob I want to click on the commitId to reblame the file at that very
+(/) As Bob I want the commitId to be clickable.
+(/) As Bob I want to click on the commitId to reblame the file at that very
     commit.
 () As Bob I want to have the reblamed file displayed left of the clicked
     commitId.
 () As Bob I want to get a balloon displaying all the commit details, when
-    hovering over over the commitId.
+    hovering over the commitId.
 """
 
 import sys
-import random
 
 from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
                                QVBoxLayout, QHBoxLayout, QWidget, QPlainTextEdit)
