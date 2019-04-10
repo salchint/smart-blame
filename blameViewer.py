@@ -11,9 +11,9 @@ class BlameViewer(QPlainTextEdit):
     """The text widget that prints the file content and the annotation info."""
 
     # Signal the commitId to be reblamed
-    commitIdClicked = Signal(int)
+    commitIdClicked = Signal(str)
 
-    def __init__(self, toBlame, commit=0):
+    def __init__(self, toBlame, commit=""):
         QPlainTextEdit.__init__(self)
 
         # The UI part
@@ -26,7 +26,7 @@ class BlameViewer(QPlainTextEdit):
         self.toBlame = toBlame
         self.printSelf(toBlame, commit)
 
-    def printSelf(self, toBlame, commit=0):
+    def printSelf(self, toBlame, commit=""):
         print("Blaming {} at commit {}....".format(toBlame, commit))
         # Run the blame command and capture the output
         blamer = Blame(toBlame, commit=commit)

@@ -61,7 +61,9 @@ class MyWidget(QWidget):
     def __init__(self, toBlame):
         QWidget.__init__(self)
 
+        self.toBlame = toBlame
         self.viewers = []
+        self.layout = QHBoxLayout()
 
         # Add the initial viewer, displaying working copy version of the given
         # file.
@@ -70,23 +72,40 @@ class MyWidget(QWidget):
 
     @Slot()
     def reblameCommit(self, commitId):
-        print("  Reblame at {}".format(commitId))
-        blameView = BlameViewer(self.viewers[0].toBlame, commitId)
+        print("  Reblame {} at {}".format(self.toBlame, commitId))
+        blameView = BlameViewer(self.toBlame, commitId)
         self.addViewer(blameView)
 
     def addViewer(self, viewer):
-        # New viewers are displayed left to the current ones
-        self.viewers.insert(0, viewer)
+        # oldViewers = self.viewers
+        # print("Reinserting {} old viewers".format(len(oldViewers)))
+        # self.clearViewers()
 
-        self.layout = QHBoxLayout()
+        # # New viewers are displayed left to the current ones
+        # self.viewers.insert(0, viewer)
+        # self.viewers += oldViewers
 
-        for v in self.viewers:
-            self.layout.addWidget(v)
+        # for v in self.viewers:
+            # print("Add {} to main layout".format(v))
+            # self.layout.addWidget(v)
+
+        self.layout.addWidget(viewer)
 
         self.setLayout(self.layout)
 
         # Make the viewer sensitive to reblaming events
         viewer.commitIdClicked.connect(self.reblameCommit)
+
+    # def clearViewers(self):
+        # """Remove all the viewers from the main widgets layout."""
+
+        # while 0 < len(self.viewers):
+            # item = self.layout.takeAt(0)
+            # self.viewers.pop(0)
+
+            # # Don't really delete the viewer as it is going to be reinserted
+            # # item.widget().deleteLater()
+            # item.widget().setParent(None)
 
 
 class ArgumentWarning(SyntaxWarning):
