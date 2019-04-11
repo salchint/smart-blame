@@ -22,6 +22,10 @@ way the list of requirements is transparent and can evolve during development.
     hovering over the commitId.
 () As Bob I want the commitIds be shortened to safe space for the code.
 () As Bob I want the same commitIds be grouped colorfully.
+<<<<<<< HEAD
+=======
+() As Bob I want to close BlameViewers individually.
+>>>>>>> Add new user stories to improve UX
 """
 
 import sys
