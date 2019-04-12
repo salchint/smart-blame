@@ -23,6 +23,8 @@ way the list of requirements is transparent and can evolve during development.
     hovering over the commitId.
 () As Bob I want the content to be syntactically highlighted.
 () As Bob I want to close BlameViewers individually.
+() As Bob I want the performance to be comparable to fugitive's.
+() As Bob I want the commit info area to look clickable when I hover over it.
 """
 
 import sys
