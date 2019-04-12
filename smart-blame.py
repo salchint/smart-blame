@@ -18,7 +18,7 @@ way the list of requirements is transparent and can evolve during development.
     commit.
 (/) As Bob I want to have the reblamed file displayed in a separate BlameViewer.
 (/) As Bob I want the commitIds be shortened to safe space for the code.
-() As Bob I want the same commitIds be grouped colorfully.
+(/) As Bob I want the same commitIds be grouped colorfully.
 () As Bob I want to get a balloon displaying all the commit details, when
     hovering over the commitId.
 () As Bob I want the content to be syntactically highlighted.

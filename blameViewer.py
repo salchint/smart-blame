@@ -1,7 +1,7 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
                                QPlainTextEdit)
 from PySide2.QtCore import (Signal, Slot, Qt, QRect)
-from PySide2.QtGui import (QPainter, QTextBlock)
+from PySide2.QtGui import (QPainter, QTextBlock, QColor)
 
 from commitInfoArea import CommitInfoArea
 from blame_file import Blame
@@ -17,6 +17,7 @@ class BlameViewer(QPlainTextEdit):
         QPlainTextEdit.__init__(self)
 
         self.toBlame = toBlame
+        self.reblameCommit = commit
         self.printSelf(toBlame, commit)
 
         # The UI part
@@ -65,16 +66,31 @@ class BlameViewer(QPlainTextEdit):
             self.updateCommitInfoAreaWidth(0)
 
     def resizeEvent(self, e):
-        # print('Resize the blame viewer')
         QPlainTextEdit.resizeEvent(self, e)
 
         cr = self.contentsRect()
         self.commitInfoArea.setGeometry(QRect(cr.left(), cr.top(),
             self.commitInfoAreaWidth(), cr.height()))
 
+    def getCommitColor(self, commitId):
+        redPart = int("0x"+commitId[0:2], 16)
+        greenPart = int("0x"+commitId[2:4], 16)
+        bluePart = int("0x"+commitId[4:6], 16)
+
+        return QColor(redPart, greenPart, bluePart)
+
+    def getCommitBackgroundColor(self):
+        if 0 == len(self.reblameCommit):
+            return QColor(255, 255, 255, 32)
+        else:
+            redPart = int("0x"+self.reblameCommit[0:2], 16)
+            greenPart = int("0x"+self.reblameCommit[2:4], 16)
+            bluePart = int("0x"+self.reblameCommit[4:6], 16)
+            return QColor(redPart, greenPart, bluePart, 32)
+
     def commitInfoAreaPaintEvent(self, e):
         painter = QPainter(self.commitInfoArea)
-        painter.fillRect(e.rect(), Qt.darkCyan)
+        painter.fillRect(e.rect(), self.getCommitBackgroundColor())
 
         block = self.firstVisibleBlock()
         blocknumber = block.blockNumber()
@@ -87,7 +103,7 @@ class BlameViewer(QPlainTextEdit):
                 commitId = self._commitLines[blocknumber][1]
                 lineNumber = self._commitLines[blocknumber][2]
                 number = commitId[0:7] + " " + lineNumber
-                painter.setPen(Qt.black)
+                painter.setPen(self.getCommitColor(commitId))
                 painter.drawText(0, top, self.commitInfoArea.width(),
                         self.fontMetrics().height(), Qt.AlignRight, number)
 
@@ -117,5 +133,4 @@ class BlameViewer(QPlainTextEdit):
             blocknumber = blocknumber + 1
 
         # print ("Clicked on {}".format(commitId))
-        # self.printSelf(self.toBlame, commitId)
         self.commitIdClicked.emit(commitId)
