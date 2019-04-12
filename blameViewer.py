@@ -16,15 +16,15 @@ class BlameViewer(QPlainTextEdit):
     def __init__(self, toBlame, commit=""):
         QPlainTextEdit.__init__(self)
 
+        self.toBlame = toBlame
+        self.printSelf(toBlame, commit)
+
         # The UI part
         self.commitInfoArea = CommitInfoArea(self)
         self.blockCountChanged.connect(self.updateCommitInfoAreaWidth)
         self.updateRequest.connect(self.updateCommitInfoArea)
         self.commitInfoArea.clicked.connect(self.reblameAtCommit)
         self.updateCommitInfoAreaWidth(0)
-
-        self.toBlame = toBlame
-        self.printSelf(toBlame, commit)
 
     def printSelf(self, toBlame, commit=""):
         print("Blaming {} at commit {}....".format(toBlame, commit))
@@ -38,8 +38,15 @@ class BlameViewer(QPlainTextEdit):
         self.setPlainText('\n'.join((l[0] for l in self._commitLines)))
 
     def commitInfoAreaWidth(self):
-        digits = 44
-        space = 3 + self.fontMetrics().width('9') * digits
+        lineNumberDigits = 1
+        lineCount = len(self._commitLines)
+
+        while 10 < lineCount:
+            lineNumberDigits += 1
+            lineCount /= 10
+
+        digits = 8 + lineNumberDigits
+        space = 3 + self.fontMetrics().width('0') * digits
         return space
 
     @Slot()
@@ -79,7 +86,7 @@ class BlameViewer(QPlainTextEdit):
             if block.isVisible()  and  bottom >= e.rect().top():
                 commitId = self._commitLines[blocknumber][1]
                 lineNumber = self._commitLines[blocknumber][2]
-                number = commitId + " " + lineNumber
+                number = commitId[0:7] + " " + lineNumber
                 painter.setPen(Qt.black)
                 painter.drawText(0, top, self.commitInfoArea.width(),
                         self.fontMetrics().height(), Qt.AlignRight, number)

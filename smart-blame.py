@@ -11,21 +11,18 @@ way the list of requirements is transparent and can evolve during development.
 (/) As Bob I want the BlameDocument widget split in order to have the commit info
     separated from the content.
 (/) As Bob I want the commit info and the content scroll simultaneously.
-() As Bob I want the content to be syntactically highlighted.
 (/) As Werner I want to get and process the commit info in its porcelain format
     in order to get the full information about the commit.
 (/) As Bob I want the commitId to be clickable.
 (/) As Bob I want to click on the commitId to reblame the file at that very
     commit.
 (/) As Bob I want to have the reblamed file displayed in a separate BlameViewer.
+(/) As Bob I want the commitIds be shortened to safe space for the code.
+() As Bob I want the same commitIds be grouped colorfully.
 () As Bob I want to get a balloon displaying all the commit details, when
     hovering over the commitId.
-() As Bob I want the commitIds be shortened to safe space for the code.
-() As Bob I want the same commitIds be grouped colorfully.
-<<<<<<< HEAD
-=======
+() As Bob I want the content to be syntactically highlighted.
 () As Bob I want to close BlameViewers individually.
->>>>>>> Add new user stories to improve UX
 """
 
 import sys
