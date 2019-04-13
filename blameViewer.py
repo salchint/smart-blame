@@ -1,6 +1,6 @@
 from PySide2.QtWidgets import (QVBoxLayout, QHBoxLayout, QWidget,
-                               QPlainTextEdit)
-from PySide2.QtCore import (Signal, Slot, Qt, QRect)
+                               QPlainTextEdit, QToolTip)
+from PySide2.QtCore import (Signal, Slot, Qt, QRect, QPoint)
 from PySide2.QtGui import (QPainter, QTextBlock, QColor)
 
 from commitInfoArea import CommitInfoArea
@@ -64,6 +64,11 @@ class BlameViewer(QPlainTextEdit):
 
         if rect.contains(self.viewport().rect()):
             self.updateCommitInfoAreaWidth(0)
+
+        cr = self.contentsRect()
+        pos = QPoint(cr.left() + self.commitInfoAreaWidth(), cr.top())
+        balloon = QToolTip()
+        balloon.showText(pos, "Commit Info", self, rect)
 
     def resizeEvent(self, e):
         QPlainTextEdit.resizeEvent(self, e)
