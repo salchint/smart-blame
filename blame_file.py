@@ -60,6 +60,7 @@ class Blame:
         else:
             self.gitArgs = "git blame --porcelain -- {}".format(toBlame)
         self._readOffset = 0
+        self._annotated = self.run().decode()
 
     def run(self):
         try:
@@ -75,8 +76,7 @@ class Blame:
             print("Failed to run '{0}': ({1}) {2}".format(e.cmd, e.returncode, e.output.decode()))
 
     def iterLine(self, offset):
-        annotated = self.run().decode()
-        for line in annotated[offset:].split('\n'):
+        for line in self._annotated[offset:].split('\n'):
             self._readOffset += len(line) + 1
             line = line.rstrip()
             yield line
