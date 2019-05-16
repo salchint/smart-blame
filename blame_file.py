@@ -3,6 +3,7 @@
 
 import subprocess
 import shlex
+import os.path
 
 
 class PorcelainBlock:
@@ -55,10 +56,17 @@ class Blame:
     """
 
     def __init__(self, toBlame, commit=""):
+        path, filename = os.path.split(toBlame)
+        path = path.replace("\\", "\\\\")
+        print(path)
+        if not path:
+            path = "."
         if 0 < len(commit):
-            self.gitArgs = "git blame --porcelain {} -- {}".format(commit, toBlame)
+            self.gitArgs = "git -C {} blame --porcelain {} -- {}".format(
+                    path, commit, filename)
         else:
-            self.gitArgs = "git blame --porcelain -- {}".format(toBlame)
+            self.gitArgs = "git -C {} blame --porcelain -- {}".format(
+                   path, filename)
         self._readOffset = 0
         self._annotated = self.run().decode()
 
