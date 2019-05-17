@@ -2,7 +2,7 @@
 
 if "%1"=="" goto USAGE
 
-python smart-blame.py "%1"
+python %~dp0smart-blame.py "%1"
 goto :eof
 
 :USAGE
